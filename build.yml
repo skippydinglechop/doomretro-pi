@@ -1,4 +1,4 @@
-name: Build Doom Retro (Pi 4)
+name: .github/workflows/build.yml
 
 on:
   workflow_dispatch:
