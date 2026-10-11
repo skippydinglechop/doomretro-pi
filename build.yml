@@ -1,0 +1,30 @@
+name: Build Doom Retro (Pi 4)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    # Native ARM64 runner, so the Docker build in the kit runs without emulation.
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Get the kit from this repo
+        uses: actions/checkout@v4
+
+      - name: Unpack the kit
+        run: unzip -q doomretro-batocera-pi4.zip
+
+      - name: Download Doom Retro 6.3 source
+        run: git clone --depth 1 --branch v6.3 https://github.com/bradharding/doomretro.git doomretro-src
+
+      - name: Build for Raspberry Pi 4
+        run: |
+          cd doomretro-batocera-pi4/build
+          bash build.sh "$GITHUB_WORKSPACE/doomretro-src"
+
+      - name: Upload the finished ports folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: doomretro-batocera-pi4-built
+          path: doomretro-batocera-pi4/ports
+          if-no-files-found: error
